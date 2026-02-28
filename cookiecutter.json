@@ -4,8 +4,9 @@
   "description": "A Django project",
   "author_name": "Your Name",
   "author_email": "your@email.com",
-  "python_version": "3.13",
-  "language_code": "en-us",
-  "timezone": "UTC",
+  "python_version": "3.14",
+  "language_code": "pt-br",
+  "i18n_language_code": "pt_BR",
+  "timezone": "America/Sao_Paulo",
   "app_container_port": "8001"
 }

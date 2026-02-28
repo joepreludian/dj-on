@@ -1,5 +1,6 @@
 from pathlib import Path
 import environ
+from {{ cookiecutter.project_slug }}.project_version import get_project_version
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,6 +16,7 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
     "daphne",
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -36,7 +38,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "my_django_project.urls"
+ROOT_URLCONF = "{{cookiecutter.project_slug}}.urls"
 
 TEMPLATES = [
     {
@@ -53,8 +55,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "my_django_project.wsgi.application"
-ASGI_APPLICATION = "my_django_project.asgi.application"
+WSGI_APPLICATION = "{{cookiecutter.project_slug}}.wsgi.application"
+ASGI_APPLICATION = "{{cookiecutter.project_slug}}.asgi.application"
 
 DATABASES = {
     "default": env.db("DATABASE_URL")
@@ -67,13 +69,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = "{{ cookiecutter.language_code }}"
+TIME_ZONE = "{{ cookiecutter.timezone }}"
 USE_I18N = True
 USE_TZ = True
 
+LOCALE_PATHS = [BASE_DIR / "{{ cookiecutter.project_slug }}" / "locale"]
+
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR.parent / "staticfiles"
+STATIC_ROOT = BASE_DIR.parent / "static"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -92,3 +96,27 @@ DRAMATIQ_BROKER = {
         "django_dramatiq.middleware.AdminMiddleware"
     ],
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:{{ cookiecutter.app_container_port }}",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:{{ cookiecutter.app_container_port }}",
+]
+
+CORS_ALLOW_METHODS = ("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+
+CORS_ALLOW_HEADERS = (
+    "x-company-token",
+    "x-requested-with",
+    "content-type",
+    "accept",
+    "origin",
+    "authorization",
+    "x-csrftoken",
+    "cache",
+    "cookie",
+)
+
+PROJECT_VERSION, PROJECT_GIT_SHA = get_project_version()
