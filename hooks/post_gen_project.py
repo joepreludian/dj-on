@@ -67,7 +67,7 @@ The server is currently running at http://localhost:{{ cookiecutter.app_containe
 Create an administrative user by running:
 
     $ make createsuperuser
-    
+
 For more info, please take a look at the docs.
 Have fun!
     """)

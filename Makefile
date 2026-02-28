@@ -4,4 +4,3 @@ clean:
 
 test: clean
 	cd .. && cookiecutter dj-on --no-input
-
