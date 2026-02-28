@@ -13,7 +13,7 @@ dependencies = [
     "django-cors-headers>=4.9.0",
     "django-dramatiq>=0.11.6",
     "django-environ>=0.12.1",
-    "django-jazzmin>=3.0.1",
+    "django-jazzmin==3.0.1",
     "django-ninja>=1.5.3",
     "dramatiq[redis,watch]>=1.17.1",
     "httpx>=0.28.1",
