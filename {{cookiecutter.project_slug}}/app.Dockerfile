@@ -1,0 +1,29 @@
+FROM astral/uv:python3.14-bookworm-slim as builder
+
+ARG BUILD_MODE
+
+COPY pyproject.toml uv.lock /
+
+RUN pip install toml-cli && toml get --toml-path pyproject.toml project.version > /tmp/PROJECT_VERSION
+
+RUN if [ "${BUILD_MODE}" = "IS_DEV" ] ; then uv export --no-editable --no-emit-project -o /tmp/requirements.txt ; fi
+RUN if [ "${BUILD_MODE}" = "IS_PROD" ] ; then uv export --no-dev --no-editable --no-emit-project -o /tmp/requirements.txt ; fi
+
+FROM python:{{cookiecutter.python_version}}
+
+WORKDIR /app/
+
+COPY --from=builder /tmp/requirements.txt /app/
+COPY --from=builder /tmp/PROJECT_VERSION /app/
+
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y gettext && apt clean all
+
+RUN pip install -r requirements.txt
+
+COPY ./ /app/
+
+EXPOSE {{ cookiecutter.app_container_port }}
+
+WORKDIR /app/src/
+
+CMD ["daphne", "-b", "0.0.0.0", "-p", "{{cookiecutter.app_container_port}}", "{{cookiecutter.project_slug}}.asgi:application"]

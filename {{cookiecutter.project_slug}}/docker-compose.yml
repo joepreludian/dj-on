@@ -1,0 +1,56 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+      args:
+        - BUILD_MODE=IS_DEV
+    image: {{cookiecutter.project_slug}}-app:latest
+    ports:
+      - "{{cookiecutter.app_container_port}}:{{cookiecutter.app_container_port}}"
+    env_file:
+      - .env
+    volumes:
+      - ./:/app/
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      worker:
+        condition: service_started
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: {{cookiecutter.project_slug}}_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: docker.io/valkey/valkey
+    ports:
+      - "16379:6379"
+
+  worker:
+    image: {{cookiecutter.project_slug}}-app:latest
+    command: python manage.py rundramatiq
+    volumes:
+      - ./:/app/
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+volumes:
+  postgres_data:
