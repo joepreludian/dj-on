@@ -1,28 +1,29 @@
-# django-init
+# 🚀 DJ-ON
+An opinionated cookiecutter project template for Django quickstart. It's using some common technologies that helps to bootstrap a production ready django application.
 
-A [cookiecutter](https://github.com/cookiecutter/cookiecutter) template for production-ready Django projects.
-
-## Features
+## 🔩 Features
 
 - **PostgreSQL** via `psycopg2-binary`
 - **Daphne** ASGI server (also powers `manage.py runserver`)
 - **django-environ** for 12-factor config
 - **WhiteNoise** for static files
 - **django-ninja** with a `/api/health` endpoint pre-wired
-- **uv** package manager with `src/` layout
 - **Docker Compose** + multi-stage `Dockerfile`
 - **Makefile** with common development targets
-- **Dramatiq + Valkey** — task queue and worker service, always included
+- **Dramatiq + Valkey** — task queue and worker service
 - **pre-commit** with Ruff (linting + formatting) and common hooks
-- **`base` app** pre-scaffolded as a starter Django app
+- **`base` app** pre-scaffolded to work as a support app for your apps.
+  - Contains a healthcheck API route and a common Abstract model with created_at and updated_at fields. 
+- **tests** folder
 
-## Requirements
+
+## 📝 Requirements
 
 - [cookiecutter](https://cookiecutter.readthedocs.io/) (`pip install cookiecutter` or `uv tool install cookiecutter`)
 - [uv](https://docs.astral.sh/uv/) (installed on your machine)
 - [Docker](https://docs.docker.com/get-docker/) (for the post-generation setup)
 
-## Usage
+## ▶️ Start here
 
 ```bash
 cookiecutter gh:preludian/django-init
@@ -34,21 +35,7 @@ Or locally:
 cookiecutter path/to/django-init
 ```
 
-### Prompts
-
-| Variable | Default | Description |
-|---|---|---|
-| `project_name` | My Django Project | Human-readable project name |
-| `project_slug` | auto-derived | Python package name (underscored) |
-| `description` | A Django project | Short description |
-| `author_name` | Your Name | Author name |
-| `author_email` | your@email.com | Author email |
-| `python_version` | 3.13 | Python version |
-| `language_code` | en-us | Django `LANGUAGE_CODE` setting |
-| `timezone` | UTC | Django `TIME_ZONE` setting |
-| `app_container_port` | 8001 | Host port mapped to the app container |
-
-## After Generation
+## 🪖 After Generation
 
 The post-generation hook runs automatically and:
 
@@ -58,16 +45,17 @@ The post-generation hook runs automatically and:
 4. Builds Docker images (`docker compose build --no-cache`)
 5. Starts Docker Compose services (`docker compose up --wait`)
 6. Applies database migrations (`make migrate`)
+7. Creates a superuser (`make createsuperuser`)
 
 Once complete, your project is ready:
 
 ```bash
 cd <project_slug>
+```
+And start doing your great new application!
 
 # Check the health endpoint
-curl http://localhost:<app_container_port>/api/health
-# → {"status": "ok"}
-```
+http://localhost:<app_container_port>/api/docs
 
 ### Common Makefile targets
 
@@ -84,36 +72,4 @@ make up              # Start all services (detached)
 make down            # Stop all services
 make logs            # Follow Docker Compose logs
 make clean           # Stop containers, remove volumes, clean pycache
-```
-
-## Generated Project Structure
-
-```
-<project_slug>/
-├── .env.example
-├── .env               ← created by hook with generated SECRET_KEY
-├── .gitignore
-├── .pre-commit-config.yaml
-├── .python-version
-├── pyproject.toml
-├── uv.lock            ← created by hook after uv sync
-├── Makefile
-├── app.Dockerfile
-├── docker-compose.yml
-└── src/
-    ├── manage.py
-    ├── base/          ← starter app (models, views, admin, tests)
-    │   ├── __init__.py
-    │   ├── admin.py
-    │   ├── apps.py
-    │   ├── migrations/
-    │   ├── models.py
-    │   ├── tests.py
-    │   └── views.py
-    └── <project_slug>/
-        ├── __init__.py
-        ├── settings.py
-        ├── urls.py
-        ├── asgi.py
-        └── wsgi.py
 ```

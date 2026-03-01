@@ -1,4 +1,5 @@
-DJANGO_CMD = docker compose run --rm app python manage.py
+RUN_APP = docker compose run --rm app
+DJANGO_CMD = $(RUN_APP) python manage.py
 
 runserver:
 	$(DJANGO_CMD) runserver
@@ -44,9 +45,7 @@ logs:
 
 clean:
 	docker compose down -v
-	$(MAKE) clean-pyc
 
-clean-pyc:
-	find . -type d -name __pycache__ -exec rm -rf {} +
-	find . -name "*.pyc" -delete
-	find . -name "*.pyo" -delete
+tests:
+	$(RUN_APP) cd .. && pytest
+

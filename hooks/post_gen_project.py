@@ -20,20 +20,22 @@ def write_env() -> None:
     content = env_example.read_text()
     content = content.replace("CHANGE_ME", generate_secret_key())
     env_file.write_text(content)
+
     print(f"Created {env_file}")
 
-
 def run_uv_sync() -> None:
-    print("Running uv sync …")
     result = subprocess.run(
         ["uv", "sync"],
         cwd=PROJECT_DIR,
     )
     if result.returncode != 0:
         print("WARNING: uv sync failed. Run it manually after fixing any issues.")
-    else:
-        print("uv sync completed successfully.")
+        exit (1)
 
+    subprocess.run(
+        ["uv", "lock", "--upgrade"],
+        cwd=PROJECT_DIR,
+    )
 
 def run_docker_build() -> None:
     subprocess.run(["make", "build"], cwd=PROJECT_DIR)
@@ -56,6 +58,7 @@ def run_docker_compose_prepare() -> None:
     subprocess.run(["make", "migrate"], cwd=PROJECT_DIR)
     subprocess.run(["make", "messages"], cwd=PROJECT_DIR)
     subprocess.run(["make", "compilemessages"], cwd=PROJECT_DIR)
+    subprocess.run(["make", "createsuperuser"], cwd=PROJECT_DIR)
     subprocess.run(["uvx", "pre-commit", "run", "--all-files"], cwd=PROJECT_DIR)
     subprocess.run(["uvx", "pre-commit", "install"], cwd=PROJECT_DIR)
 
@@ -63,10 +66,9 @@ def print_next_steps() -> None:
     slug = "{{ cookiecutter.project_slug }}"
     print(f"\n\n⭐️ Project '{slug}' created successfully!")
     print("""
-The server is currently running at http://localhost:{{ cookiecutter.app_container_port }}
-Create an administrative user by running:
+The server is already running at http://localhost:{{ cookiecutter.app_container_port }}
 
-    $ make createsuperuser
+    $ cd {{ cookiecutter.project_slug }}
 
 For more info, please take a look at the docs.
 Have fun!
