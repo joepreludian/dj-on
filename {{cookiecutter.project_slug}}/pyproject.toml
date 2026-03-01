@@ -29,7 +29,7 @@ build-backend = "uv_build"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "{{ cookiecutter.project_slug }}.settings"
 python_files = ["test_*.py", "*_test.py"]
-python_path = ['src']
+addopts = "../tests"
 
 [dependency-groups]
 dev = [

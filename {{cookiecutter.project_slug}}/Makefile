@@ -46,6 +46,6 @@ logs:
 clean:
 	docker compose down -v
 
-tests:
-	$(RUN_APP) cd .. && pytest
+test:
+	$(RUN_APP) pytest
 
