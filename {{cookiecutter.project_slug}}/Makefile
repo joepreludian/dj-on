@@ -49,3 +49,18 @@ clean:
 test:
 	$(RUN_APP) pytest
 
+destroy_and_recreate_all_migrations:
+	@read -p "THIS WILL REMOVE ALL MIGRATIONS AND RECREATE ALL THE DB STRUCTURE. ONLY USED IN DEV: " ANSWER; \
+	if [ "$$ANSWER" != "y" ]; then \
+		echo "Operation cancelled."; \
+		exit 1; \
+	fi
+
+	@echo "Removing old migrations..."
+	find ./src -name "0*.py" | grep migrations | xargs rm -v
+
+	$(MAKE) clean
+	$(MAKE) migrations
+	$(MAKE) migrate
+	$(MAKE) createsuperuser
+
