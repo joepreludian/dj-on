@@ -50,7 +50,7 @@ test:
 	$(RUN_APP) pytest
 
 destroy_and_recreate_all_migrations:
-	@read -p "THIS WILL REMOVE ALL MIGRATIONS AND RECREATE ALL THE DB STRUCTURE. ONLY USED IN DEV: " ANSWER; \
+	@read -p "THIS WILL REMOVE ALL MIGRATIONS AND RECREATE ALL THE DB STRUCTURE. MUST ONLY BE USED IN DEV. ARE YOU SURE? [y/n]: " ANSWER; \
 	if [ "$$ANSWER" != "y" ]; then \
 		echo "Operation cancelled."; \
 		exit 1; \
