@@ -122,3 +122,18 @@ CORS_ALLOW_HEADERS = (
 )
 
 PROJECT_VERSION, PROJECT_GIT_SHA = get_project_version()
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
