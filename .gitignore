@@ -17,6 +17,3 @@ wheels/
 staticfiles/
 media/
 db.sqlite3
-
-# uv
-uv.lock
