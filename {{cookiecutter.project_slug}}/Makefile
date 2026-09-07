@@ -16,6 +16,9 @@ collectstatic:
 createsuperuser:
 	$(DJANGO_CMD) createsuperuser
 
+scheduler:
+	$(DJANGO_CMD) run_apscheduler
+
 shell:
 	$(DJANGO_CMD) shell
 

@@ -40,9 +40,6 @@ def run_uv_sync() -> None:
 def run_docker_build() -> None:
     subprocess.run(["make", "build"], cwd=PROJECT_DIR)
 
-def run_project_migrations() -> None:
-    subprocess.run(["make", "migrations"], cwd=PROJECT_DIR)
-
 def run_git_init() -> None:
     subprocess.run(["git", "init"], cwd=PROJECT_DIR)
     subprocess.run(["git", "add", "."], cwd=PROJECT_DIR)
@@ -54,8 +51,16 @@ def run_docker_compose_build() -> None:
 def run_docker_compose_up() -> None:
     subprocess.run(["docker", "compose", "up", "--wait"], cwd=PROJECT_DIR)
 
-def run_docker_compose_prepare() -> None:
+def run_project_migrate() -> None:
+    """Apply migrations before any long-running service starts.
+
+    `make migrate` goes through `docker compose run --rm app`, which starts only
+    app's dependencies. The scheduler queries its own tables the moment it boots,
+    so it must not come up before this has run.
+    """
     subprocess.run(["make", "migrate"], cwd=PROJECT_DIR)
+
+def run_docker_compose_prepare() -> None:
     subprocess.run(["make", "messages"], cwd=PROJECT_DIR)
     subprocess.run(["make", "compilemessages"], cwd=PROJECT_DIR)
     subprocess.run(["make", "createsuperuser"], cwd=PROJECT_DIR)
@@ -80,6 +85,7 @@ if __name__ == "__main__":
     run_uv_sync()
     run_git_init()
     run_docker_compose_build()
+    run_project_migrate()
     run_docker_compose_up()
     run_docker_compose_prepare()
     print_next_steps()

@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_dramatiq",
+    "django_apscheduler",
     "base.apps.BaseConfig"
 ]
 
@@ -98,6 +99,11 @@ DRAMATIQ_BROKER = {
         "django_dramatiq.middleware.AdminMiddleware"
     ],
 }
+
+# APScheduler
+# How long (in seconds) to keep job execution history before it is pruned by the
+# `delete_old_job_executions` job in base/jobs.py.
+APSCHEDULER_JOB_EXECUTIONS_MAX_AGE = 60 * 60 * 24 * 7
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:{{ cookiecutter.app_container_port }}",
